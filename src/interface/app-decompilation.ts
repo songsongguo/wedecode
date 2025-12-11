@@ -208,12 +208,14 @@ export class AppDecompilation extends BaseDecompilation {
       }
 
       for (const key in usingComponents) {
-        if (usingComponents[key].startsWith("/./")){
-          // console.log("🚀 ~ decompileAllJSON ~ usingComponents[key]:", usingComponents[key])
-          usingComponents[key] = usingComponents[key].substring(3)
-        }
-        usingComponents[key] = path.join(path.dirname(filePath), usingComponents[key])
-      }
+  if (usingComponents[key].startsWith("/./")){
+    usingComponents[key] = usingComponents[key].substring(3)
+  }
+  // 如果是插件路径，不进行路径拼接，避免在 Windows 下产生非法路径
+  if (!isPluginPath(usingComponents[key])) {
+    usingComponents[key] = path.join(path.dirname(filePath), usingComponents[key])
+  }
+}
 
       let realJsonConfigString = JSON.stringify(pageJson, null, 2)
       let jsonOutputPath = filePath

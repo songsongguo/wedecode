@@ -61,6 +61,8 @@ export function saveLocalFile(
   opt: { force?: boolean, emptyInstead?: boolean } = {}
 ): boolean {
   filepath = filepath.replace(pluginDirRename[0], pluginDirRename[1]) // 重定向插件路径
+  // 处理 Windows 系统中非法的路径字符，将 plugin: 和 plugin-private: 替换为合法的目录名
+filepath = filepath.replace(/plugin:/g, 'plugin_').replace(/plugin-private:/g, 'plugin-private_')
   const targetData = fs.existsSync(filepath) ? fs.readFileSync(filepath, { encoding: 'utf-8' }).trim() : ''
   let force = typeof opt.force === 'boolean' ? opt.force : opt.emptyInstead || !targetData.length
   const outputDirPath = path.dirname(filepath)
